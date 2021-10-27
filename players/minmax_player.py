@@ -7,9 +7,17 @@ from environment import TicTacToe, PlayerId
 
 class MinMaxPlayer(BasePlayer):
 
+    def __init__(self, player_id):
+        super().__init__(player_id)
+        self.moves_dict = {}
+
     def next_move(self, board: TicTacToe):
-        moves_tree = self._build_moves_tree(board, self.id)
-        return self._get_best_move(moves_tree)[0]
+        best_move = self.moves_dict.get(board.flatten())
+        if best_move is None:
+            moves_tree = self._build_moves_tree(board, self.id)
+            best_move = self._get_best_move(moves_tree)[0]
+            self.moves_dict.update({board.flatten(): best_move})
+        return best_move
 
     def _build_moves_tree(self, board: TicTacToe, player_id: PlayerId):
         moves_list = []
@@ -39,7 +47,6 @@ class MinMaxPlayer(BasePlayer):
         best_move_index = np.argmax(results) if moves_tree[0][0] is self.id else np.argmin(results)
         best_move = moves_tree[best_move_index][1]
         return best_move, best_move_score
-
 
 
 
