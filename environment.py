@@ -19,12 +19,12 @@ class TicTacToe:
 
     def check_win(self):
         flat_board = self.board.flatten()
-        if all(flat_board != self.empty_sign):
-            return 'draw'
         if np.any(np.sum(flat_board[self.win_lines] == PlayerId.X.value, axis=1) == 3):
             return 'player x wins'
         if np.any(np.sum(flat_board[self.win_lines] == PlayerId.O.value, axis=1) == 3):
             return 'player o wins'
+        if all(flat_board != self.empty_sign):
+            return 'draw'
         return 'no win'
 
     def player_move(self, player_id: PlayerId, loc):
@@ -37,11 +37,12 @@ class TicTacToe:
         return [np.unravel_index(_i, self.board.shape) for _i in range(self.board.size)
                 if flat_board[_i] == self.empty_sign]
 
+    def flatten(self):
+        return ''.join(self.board.flatten())
+
     def print_board(self):
-        print('\n')
         print(f' {self.board[0,0]} | {self.board[0,1]} | {self.board[0,2]}')
         print('---+---+---')
         print(f' {self.board[1,0]} | {self.board[1,1]} | {self.board[1,2]}')
         print('---+---+---')
         print(f' {self.board[2,0]} | {self.board[2,1]} | {self.board[2,2]}')
-        print('\n')

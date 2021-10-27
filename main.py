@@ -1,6 +1,6 @@
 from typing import List
 from environment import TicTacToe, PlayerId
-from players import RandomPlayer
+from players import RandomPlayer, MinMaxPlayer, HumanPlayer
 
 
 def play_game(players: List):
@@ -21,5 +21,5 @@ def play_game(players: List):
 if __name__ == '__main__':
 
     # init players
-    players_list = [RandomPlayer(PlayerId.X), RandomPlayer(PlayerId.O)]
+    players_list = [HumanPlayer(PlayerId.X), RandomPlayer(PlayerId.O)]
     win_state = play_game(players_list)
