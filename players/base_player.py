@@ -10,6 +10,9 @@ class BasePlayer:
     def __init__(self, player_id: PlayerId):
         self.id = player_id
 
+    def end_game(self, result):
+        pass
+
     @abc.abstractmethod
     def next_move(self, board):
         """

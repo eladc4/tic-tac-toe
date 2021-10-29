@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List
 from environment import TicTacToe, PlayerId
-from players import RandomPlayer, MinMaxPlayer, HumanPlayer
+from players import RandomPlayer, MinMaxPlayer, HumanPlayer, TQPlayer
 
 
 def play_game(players: List, print_board=True):
@@ -18,14 +18,15 @@ def play_game(players: List, print_board=True):
     game_win_state = ttt.check_win()
     if print_board:
         print(game_win_state)
+    [player.end_game(game_win_state) for player in players]
     return game_win_state
 
 
 if __name__ == '__main__':
-    N = 100000
+    N = 10000
 
-    def run_games(players_list):
-        random_random = [play_game(players_list, print_board=False) for _ in range(N)]
+    def run_games(players_list, print_board=False):
+        random_random = [play_game(players_list, print_board=print_board) for _ in range(N)]
         p_x_win = 100 * np.mean([g == 'player x wins' for g in random_random])
         p_o_win = 100 * np.mean([g == 'player o wins' for g in random_random])
         draw = 100 * np.mean([g == 'draw' for g in random_random])
@@ -38,7 +39,9 @@ if __name__ == '__main__':
     minmax_player_o = MinMaxPlayer(PlayerId.O)
     random_player_x = RandomPlayer(PlayerId.X)
     random_player_o = RandomPlayer(PlayerId.O)
+    tq_player_x = TQPlayer(PlayerId.X)
 
+    print('N =', N)
     print('Player            | P1 Win | P2 Win  |  Draw')
     print('|:---|:---:|:---:|:---:|')
     p1_win, p2_win, draw = run_games([random_player_x, random_player_o])
@@ -51,5 +54,9 @@ if __name__ == '__main__':
     print(f'Random - MinMax   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
     p1_win, p2_win, draw = run_games([minmax_player_x, minmax_player_o])
     print(f'MinMax - MinMax   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
+    p1_win, p2_win, draw = run_games([tq_player_x, random_player_o])
+    print(f'TQ - Random   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
+    p1_win, p2_win, draw = run_games([tq_player_x, minmax_player_o])
+    print(f'TQ - MinMax   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
 
     print('done')
