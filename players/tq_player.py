@@ -4,6 +4,7 @@ from typing import Dict, List
 from collections import namedtuple
 
 from players.base_player import BasePlayer
+from players.common import results_to_reward
 from environment import TicTacToe, PlayerId
 
 
@@ -14,7 +15,7 @@ class TQPlayer(BasePlayer):
         self.init_value = init_value
         self.alpha = alpha
         self.gamma = gamma
-        self.moves_dict = {}#defaultdict(lambda: init_value*np.ones(9))
+        self.moves_dict = {}
         self.moves_list = []
         self.move = namedtuple('move_tuple', 'flat_board best_move_index')
 
@@ -32,15 +33,7 @@ class TQPlayer(BasePlayer):
         return best_move
 
     def end_game(self, game_result):
-        if game_result == 'draw':
-            reward = 0.5
-        elif game_result == 'player x wins' and self.id is PlayerId.X:
-            reward = 1.0
-        elif game_result == 'player o wins' and self.id is PlayerId.O:
-            reward = 1.0
-        else:
-            reward = 0.0
-
+        reward = results_to_reward(game_result, self.id)
         next_move_flat_board = None
         for i, move in enumerate(self.moves_list):
             if i == 0:

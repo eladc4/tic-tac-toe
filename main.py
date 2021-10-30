@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List
 from environment import TicTacToe, PlayerId
-from players import RandomPlayer, MinMaxPlayer, HumanPlayer, TQPlayer
+from players import RandomPlayer, MinMaxPlayer, HumanPlayer, TQPlayer, NNPlayer
 
 
 def play_game(players: List, print_board=True):
@@ -23,7 +23,7 @@ def play_game(players: List, print_board=True):
 
 
 if __name__ == '__main__':
-    N = 10000
+    N = 5000
 
     def run_games(players_list, print_board=False):
         random_random = [play_game(players_list, print_board=print_board) for _ in range(N)]
@@ -40,6 +40,21 @@ if __name__ == '__main__':
     random_player_x = RandomPlayer(PlayerId.X)
     random_player_o = RandomPlayer(PlayerId.O)
     tq_player_x = TQPlayer(PlayerId.X)
+    tq_player_o = TQPlayer(PlayerId.O)
+    nn_player_x = NNPlayer(PlayerId.X, deterministic=False)
+    nn_player_o = NNPlayer(PlayerId.O, deterministic=False)
+
+    print('N =', N)
+    print('Player            | P1 Win | P2 Win  |  Draw')
+    print('|:---|:---:|:---:|:---:|')
+    p1_win, p2_win, draw = run_games([nn_player_x, nn_player_o])
+    print(f'NN - NN   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
+    p1_win, p2_win, draw = run_games([nn_player_x, random_player_o])
+    print(f'NN - Random   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
+    p1_win, p2_win, draw = run_games([random_player_x, nn_player_o])
+    print(f'Random - NN   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
+    p1_win, p2_win, draw = run_games([nn_player_x, nn_player_o])
+    print(f'NN - NN   | {p1_win: 3.1f}% | {p2_win: 3.1f}%  | {draw: 3.1f}%')
 
     print('N =', N)
     print('Player            | P1 Win | P2 Win  |  Draw')

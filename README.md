@@ -1,8 +1,8 @@
 # tic-tac-toe
 
-my take on https://medium.com/@carsten.friedrich/teaching-a-computer-to-play-tic-tac-toe-88feb838b5e3
+My PyTorch implementation of [Carsten Friedrich's "teaching-a-computer-to-play-tic-tac-toe"](https://medium.com/@carsten.friedrich/teaching-a-computer-to-play-tic-tac-toe-88feb838b5e3)
 
-## results for 100,000 games:
+## Results for 100,000 games:
 
 Player            | P1 Win | P2 Win  |  Draw
 |:---|:---:|:---:|:---:|

@@ -9,6 +9,11 @@ __pycache__/
 # SDK
 .idea/
 
+# local files and folders
+pytorch_scratch_pad.py
+model.pth
+pytorch_datasets/
+
 # Distribution / packaging
 .Python
 build/
