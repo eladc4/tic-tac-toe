@@ -11,12 +11,17 @@ class BasePlayer:
         self.id = player_id
 
     def end_game(self, result):
+        """
+        end game post processing
+        :param result: game result
+        :return: None
+        """
         pass
 
     @abc.abstractmethod
     def next_move(self, board):
         """
         returns the player next move according to current board state
-        :param board: board numpy array
-        :return: index of next move
+        :param board: board object
+        :return: indices for next move (x, y)
         """

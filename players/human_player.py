@@ -8,4 +8,4 @@ class HumanPlayer(BasePlayer):
 
     def next_move(self, board: TicTacToe):
         move_str = input(f"player {self.id} type your move: ")
-        return int(move_str[0]), int(move_str[-1])
+        return int(move_str[0])-1, int(move_str[-1])-1
