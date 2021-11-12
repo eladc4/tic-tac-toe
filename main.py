@@ -74,19 +74,19 @@ def print_results_table(player_pairs_list, num_games=100):
 if __name__ == '__main__':
     N = 2
 
-    nn_player_x = NNPlayer(PlayerId.X, deterministic=True, lr=1e-4)
+    nn_player_x = NNPlayer(PlayerId.X, deterministic=False, lr=1e-4, random_move_prob=0.05)
     # nn_player_x = TQPlayer(PlayerId.X)
     players_list = [nn_player_x, RandomPlayer(PlayerId.O)]
     players_list_rev = [RandomPlayer(PlayerId.O), nn_player_x]
     fig = print_results_figure(players_list, num_battles=100)
     fig = print_results_figure(players_list_rev, num_battles=100)
 
-    nn_player_x = NNPlayer(PlayerId.X, deterministic=True)
+    # nn_player_x = NNPlayer(PlayerId.X, deterministic=True)
     minmax_player_o = MinMaxPlayer(PlayerId.O, random_play_prob=0.1)
-    players_list = [RandomPlayer(PlayerId.O), nn_player_x]
-    run_games(players_list, number_of_games=1000, print_board=True)
-    players_list = [minmax_player_o, nn_player_x]
-    run_games(players_list, number_of_games=20000, print_board=True)
+    players_list = [RandomPlayer(PlayerId.X), minmax_player_o]
+    fig = print_results_figure(players_list, num_battles=100)
+    players_list = [nn_player_x, minmax_player_o]
+    fig = print_results_figure(players_list, num_battles=100)
 
     print(' start:')
     players_list = [HumanPlayer(PlayerId.O), nn_player_x]
