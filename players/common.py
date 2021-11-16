@@ -1,27 +1,37 @@
 import numpy as np
+from enum import Enum
+
 from environment import PlayerId, GameResult
 
 
-SYMMETRIC_REWARDS_DICT = {'win': 1.0,
-                          'loss': -1.0,
-                          'draw': 0.0}
+class Result(Enum):
+    WIN = 'win'
+    LOSS = 'loss'
+    DRAW = 'draw'
 
-POSITIVE_REWARDS_DICT = {'win': 1.0,
-                         'loss': 0.0,
-                         'draw': 0.5}
+
+SYMMETRIC_REWARDS_DICT = {Result.WIN: 1.0,
+                          Result.LOSS: -1.0,
+                          Result.DRAW: 0.0}
+
+POSITIVE_REWARDS_DICT = {Result.WIN: 1.0,
+                         Result.LOSS: 0.0,
+                         Result.DRAW: 0.5}
 
 
 def results_to_reward(game_result: GameResult, player_id: PlayerId, rewards_dict=None, reward_scale=1.0):
     if rewards_dict is None:
         rewards_dict = SYMMETRIC_REWARDS_DICT
     if game_result == GameResult.DRAW:
-        reward = rewards_dict['draw']
+        result = Result.DRAW
     elif game_result == GameResult.PLAYER_X_WINS and player_id is PlayerId.X:
-        reward = rewards_dict['win']
+        result = Result.WIN
     elif game_result == GameResult.PLAYER_O_WINS and player_id is PlayerId.O:
-        reward = rewards_dict['win']
+        result = Result.WIN
     else:
-        reward = rewards_dict['loss']
+        result = Result.LOSS
+    reward = rewards_dict[result]
+
     return reward * reward_scale
 
 

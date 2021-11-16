@@ -1,3 +1,4 @@
+import random
 
 import numpy as np
 from typing import Dict, List
@@ -18,7 +19,8 @@ class NNPlayer(BasePlayer):
     """
 
     def __init__(self, player_id, deterministic=True, training=True, gamma=0.95, lr=1e-4,
-                 reward_scale=100.0, random_move_prob=0.0):
+                 reward_scale=100.0, random_move_prob=0.0,
+                 separate_target_model=True, target_model_update_rate=100):
         """
 
         :param player_id: either X or O
@@ -36,9 +38,14 @@ class NNPlayer(BasePlayer):
         self.gamma = gamma
         self.reward_scale = reward_scale
         self.random_move_prob = random_move_prob
+        self.separate_target_model = separate_target_model
+        self.target_model_update_rate = target_model_update_rate
+        self.games_counter = 0
         self.moves_list = []
         self.move = namedtuple('move_tuple', 'flat_input move_logits best_move_index best_move_logit')
         self.model = self.build_model()
+        self.target_model = self.build_model().eval()
+        self.update_target_model_weights()
         self.loss_fn = nn.MSELoss()
         self.optimizer = torch.optim.SGD(self.model.parameters(), lr=lr, momentum=0.9, weight_decay=1e-4)
 
@@ -54,6 +61,9 @@ class NNPlayer(BasePlayer):
                              nn.ReLU(),
                              nn.Linear(9*9*3, 9),
                              )
+
+    def update_target_model_weights(self):
+        self.target_model.load_state_dict(self.model.state_dict())
 
     def next_move(self, board: TicTacToe):
         # build input to network: 3x3 x 3 channels for each player id => (player id, opponent id, empty slot)
@@ -86,7 +96,15 @@ class NNPlayer(BasePlayer):
         best_move = np.unravel_index(best_move_index, board.board.shape)
 
         # save move for training
-        self.moves_list.insert(0, self.move(flat_input, move_logits.copy(), best_move_index, move_logits[best_move_index]))
+        if self.separate_target_model:
+            target_move_logits = self.model(torch.Tensor(flat_input)).detach().numpy()
+            move_logits_to_save = target_move_logits.copy()
+            best_move_logit = target_move_logits[best_move_index]
+        else:
+            move_logits_to_save = move_logits.copy()
+            best_move_logit = move_logits[best_move_index]
+
+        self.moves_list.insert(0, self.move(flat_input, move_logits_to_save, best_move_index, best_move_logit))
 
         return best_move
 
@@ -97,6 +115,10 @@ class NNPlayer(BasePlayer):
         :return: None
         """
         if self.training:
+            self.games_counter = self.games_counter + 1
+            if self.games_counter % self.target_model_update_rate == 0:
+                self.update_target_model_weights()
+
             reward = results_to_reward(game_result, self.id, reward_scale=self.reward_scale)
 
             # build training batch: inputs and targets according to game result

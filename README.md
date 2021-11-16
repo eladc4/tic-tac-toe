@@ -2,6 +2,10 @@
 
 My PyTorch implementation of [Carsten Friedrich's "teaching-a-computer-to-play-tic-tac-toe"](https://medium.com/@carsten.friedrich/teaching-a-computer-to-play-tic-tac-toe-88feb838b5e3)
 
+TODO list:
+- add Experience Replay to NN-Player
+- add Duelling Q Network to NN-Player
+
 ## Results for 100,000 games:
 
 Player            | P1 Win | P2 Win  |  Draw
